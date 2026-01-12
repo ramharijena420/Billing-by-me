@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Untitled</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MAA DAKHINA KALI FLOWER DECORATION - Billing</title>
+
+<style>
+/* ================= BASE CSS (YOUR CSS) ================= */
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  margin: 0;
+}
+
+.header {
+  background: #7b0000;
+  color: white;
+  text-align: center;
+  padding: 15px;
+}
+
+.logo-container {
+  text-align: center;
+  margin: 10px;
+}
+
+.logo-container img {
+  max-height: 80px;
+}
+
+form {
+  background: white;
+  width: 320px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+input, button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+}
+
+button {
+  background: #7b0000;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: white;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.footer {
+  background: #7b0000;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  margin-top: 40px;
+}
+
+/* ================= BILLING LAYOUT ================= */
+.container {
+  width: 210mm;
+  min-height: 297mm;
+  margin: auto;
+  background: #fff;
+  padding: 12mm;
+}
+
+.hidden { display:none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #000;
+  padding: 5px;
+  text-align: center;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sign {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.no-print {
+  margin-top: 15px;
+}
+
+/* ================= SMALL PAPER ================= */
+.small .container {
+  width: 80mm;
+  min-height: auto;
+  padding: 5mm;
+  font-size: 12px;
+}
+
+.small table, .small th, .small td {
+  font-size: 11px;
+}
+
+.small img {
+  max-height: 50px;
+}
+
+/* ================= PRINT ================= */
+@page {
+  size: A4;
+  margin: 10mm;
+}
+
+@media print {
+  .no-print, .header, .footer { display: none; }
+  body { background: #fff; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h2>MAA DAKHINA KALI FLOWER DECORATION</h2>
+</div>
+
+<!-- ================= LOGIN ================= -->
+<form id="loginBox">
+  <h3 align="center">Login</h3>
+  <input id="email" placeholder="Email ID">
+  <input id="pass" type="password" placeholder="Password">
+  <button type="button" onclick="login()">Login</button>
+</form>
+
+<!-- ================= BILLING ================= -->
+<div class="container hidden" id="billBox">
+
+<div class="logo-container">
+  <img id="logo">
+  <input type="file" onchange="setLogo(this)" class="no-print">
+</div>
+
+<h2 contenteditable="true" align="center">
+MAA DAKHINA KALI FLOWER DECORATION
+</h2>
+
+<p align="center">
+Nua Sahi, Near Kali Mandira, Gudiali<br>
+📍 <a href="https://maps.app.goo.gl/9o9uZt7TmCUsLauz5" target="_blank">Location</a><br>
+📞 7096307042 | WhatsApp 9558307042
+</p>
+
+<div class="top">
+  <div>
+    Bill No: <input id="billNo"><br>
+    Date: <input type="date" id="date">
+  </div>
+  <div>
+    Customer Name: <input id="cname"><br>
+    Mobile: <input id="cmobile"><br>
+    Address: <input id="caddress">
+  </div>
+</div>
+
+<table>
+<thead>
+<tr>
+  <th>Sl</th>
+  <th>Item</th>
+  <th>Qty</th>
+  <th>Rate</th>
+  <th>Total</th>
+</tr>
+</thead>
+<tbody id="items"></tbody>
+</table>
+
+<button class="no-print" onclick="addRow()">Add Item</button>
+
+<div align="right">
+Total: <input id="total" readonly><br>
+Advance: <input id="adv" oninput="calc()"><br>
+Paid: <input id="paid" oninput="calc()"><br>
+Due: <input id="due" readonly>
+</div>
+
+<div class="sign">
+  <div>Customer Sign</div>
+  <div>Authorized Sign</div>
+</div>
+
+<div class="no-print">
+  <button onclick="saveBill()">Save Bill</button>
+  <button onclick="printA4()">Print A4</button>
+  <button onclick="printSmall()">Small Print</button>
+  <button onclick="showHistory()">History</button>
+  <button onclick="logout()">Logout</button>
+</div>
+
+</div>
+
+<!-- ================= HISTORY ================= -->
+<div class="container hidden" id="historyBox">
+<h3>Customer History</h3>
+<input placeholder="Search customer name" oninput="search(this.value)">
+<ul id="historyList"></ul>
+<button onclick="back()">Back</button>
+</div>
+
+<div class="footer">
+© 2026 Maa Dakhina Kali Flower Decoration
+</div>
+
+<script>
+/* ================= LOGIN ================= */
+const LOGIN = { email: "dakhinakali@gmail.com", pass: "549549" };
+
+function login() {
+  if (email.value === LOGIN.email && pass.value === LOGIN.pass) {
+    loginBox.classList.add("hidden");
+    billBox.classList.remove("hidden");
+    init();
+  } else alert("Invalid Login");
+}
+
+function logout() {
+  location.reload();
+}
+
+/* ================= INIT ================= */
+function init() {
+  date.value = new Date().toISOString().split("T")[0];
+  let y = new Date().getFullYear();
+  let n = +localStorage["MDK-" + y] || 0;
+  billNo.value = `MDK-${y}-${String(n + 1).padStart(3, "0")}`;
+  if (localStorage.logo) logo.src = localStorage.logo;
+}
+
+/* ================= LOGO ================= */
+function setLogo(input) {
+  let r = new FileReader();
+  r.onload = () => {
+    logo.src = r.result;
+    localStorage.logo = r.result;
+  };
+  r.readAsDataURL(input.files[0]);
+}
+
+/* ================= ITEMS ================= */
+function addRow(data = {}) {
+  let r = items.insertRow();
+  r.innerHTML = `
+    <td>${items.rows.length}</td>
+    <td><input value="${data.i || ""}"></td>
+    <td><input type="number" value="${data.q || 1}" oninput="calc()"></td>
+    <td><input type="number" value="${data.p || 0}" oninput="calc()"></td>
+    <td>0</td>`;
+}
+
+/* ================= CALC ================= */
+function calc() {
+  let sum = 0;
+  [...items.rows].forEach(r => {
+    let q = r.cells[2].children[0].value || 0;
+    let p = r.cells[3].children[0].value || 0;
+    let t = q * p;
+    r.cells[4].innerText = t;
+    sum += t;
+  });
+  total.value = sum;
+  due.value = sum - (adv.value || 0) - (paid.value || 0);
+}
+
+/* ================= SAVE ================= */
+function saveBill() {
+  let y = new Date().getFullYear();
+  let bills = JSON.parse(localStorage.bills || "[]");
+  bills.push({
+    billNo: billNo.value,
+    cname: cname.value,
+    total: total.value,
+    html: billBox.innerHTML
+  });
+  localStorage.bills = JSON.stringify(bills);
+  localStorage["MDK-" + y] = (+localStorage["MDK-" + y] || 0) + 1;
+  alert("Bill Saved Successfully");
+}
+
+/* ================= PRINT ================= */
+function printA4() {
+  document.body.classList.remove("small");
+  window.print();
+}
+
+function printSmall() {
+  document.body.classList.add("small");
+  window.print();
+  document.body.classList.remove("small");
+}
+
+/* ================= HISTORY ================= */
+function showHistory() {
+  billBox.classList.add("hidden");
+  historyBox.classList.remove("hidden");
+  render(JSON.parse(localStorage.bills || "[]"));
+}
+
+function search(v) {
+  let b = JSON.parse(localStorage.bills || "[]")
+    .filter(x => x.cname.toLowerCase().includes(v.toLowerCase()));
+  render(b);
+}
+
+function render(arr) {
+  historyList.innerHTML = "";
+  arr.forEach(b => {
+    let li = document.createElement("li");
+    li.textContent = `${b.billNo} - ${b.cname} - ₹${b.total}`;
+    li.onclick = () => {
+      billBox.innerHTML = b.html;
+      back();
+    };
+    historyList.appendChild(li);
+  });
+}
+
+function back() {
+  historyBox.classList.add("hidden");
+  billBox.classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>
+    
+  </body>
+  
+</html>
